@@ -1,0 +1,764 @@
+#include "PC
+FileIO.c"
+_
+// Define motor ports
+const tMotor motorX = motorB;
+const tMotor motorY = motorC;
+const tMotor motorPen = motorA;
+// Configure touch sensor on port S4
+// X-axis motor
+// Y-axis motor
+// Pen motor
+void configureSensors() {
+// Configure touch sensor
+SensorType[S4] = sensorEV3
+_
+Touch;
+wait1Msec(50);
+// Reset motor encoders
+nMotorEncoder[motorX] = 0;
+nMotorEncoder[motorY] = 0;
+
+nMotorEncoder[motorPen] = 0;
+}
+time
+// Function to move a motor at a specified speed for a given
+void moveMotor(tMotor motor, int speed, int timeMs) {
+motor[motor] = speed;
+wait1Msec(timeMs);
+motor[motor] = 0;
+}
+// Initialize variables for pause/resume and progress
+bool isPaused = false;
+int totalLetters = 0;
+int currentLetter = 0;
+// Function to check for pause/resume
+void checkPauseResume() {
+if (getButtonPress(buttonEnter)) {
+isPaused = !isPaused;
+
+while (getButtonPress(buttonEnter)) {} // Wait for
+button release
+if (isPaused) {
+eraseDisplay();
+displayCenteredTextLine(3,
+"Paused");
+motor[motorX] = 0;
+motor[motorY] = 0;
+motor[motorPen] = 0;
+} else {
+eraseDisplay();
+displayCenteredTextLine(3,
+"Resuming...
+");
+wait1Msec(1000);
+}
+} }
+// Function to display progress
+void displayProgress(int letterIndex) {
+int percentage = (letterIndex * 100) / totalLetters;
+eraseDisplay();
+
+displayTextLine(1,
+"Progress: %d%%"
+, percentage);
+}
+// Function to wait while checking for pause/resume
+void waitWhileChecking(int timeMs) {
+int elapsed = 0;
+while (elapsed < timeMs) {
+checkPauseResume();
+while (isPaused) {
+checkPauseResume();
+wait1Msec(100);
+}
+wait1Msec(10);
+elapsed += 10;
+}
+}
+// Convert character to uppercase
+
+char charToUpper(char c) {
+if (c >= 'a' && c <= 'z') {
+c = c - ('a' - 'A');
+}
+return c; }
+// Function to handle sensor after drawing a letter
+// Written by Jade Lee
+void handleSensor()
+{
+if (SensorValue[S4] != 0) {
+moveMotor(motorY,
+moveMotor(motorX,
+-20, 800);
+-30, 5500);
+} }
+// ====================== Drawing Functions
+======================
+// Function to draw letter 'T'
+void drawT() {
+
+moveMotor(motorPen,
+-12, 250);
+moveMotor(motorX, 20, 1000);
+moveMotor(motorPen, 12, 270);
+moveMotor(motorX,
+-20, 500);
+moveMotor(motorPen,
+-12, 250);
+moveMotor(motorY,
+-20, 400);
+moveMotor(motorPen, 12, 270);
+moveMotor(motorY, 20, 400);
+moveMotor(motorX, 20, 500);
+// Space between letters
+moveMotor(motorX, 20, 500);
+// Handle sensor after drawing
+handleSensor();
+}
+// Function to draw letter 'R'
+void drawR() {
+moveMotor(motorPen,
+moveMotor(motorY,
+-12, 265);
+-20, 400);
+
+moveMotor(motorPen, 12, 270);
+moveMotor(motorY, 20, 400);
+moveMotor(motorPen,
+-12, 230);
+moveMotor(motorX, 20, 1000);
+moveMotor(motorY,
+-14, 200);
+moveMotor(motorX,
+-20, 1000);
+moveMotor(motorX, 80, 250); // Simultaneous X and Y movement
+moveMotor(motorY,
+-20, 0); // Reset Y motor
+moveMotor(motorX, 0, 0);
+moveMotor(motorPen, 12, 270);
+moveMotor(motorY, 20, 400);
+// Space between letters
+moveMotor(motorX, 20, 500);
+// Handle sensor after drawing
+handleSensor();
+}
+// Function to draw letter 'O'
+void drawO() {
+moveMotor(motorPen,
+-12, 250);
+moveMotor(motorY,
+-20, 400);
+moveMotor(motorX, 20, 1000);
+moveMotor(motorY, 20, 400);
+
+moveMotor(motorX,
+-20, 1000);
+moveMotor(motorPen, 12, 270);
+moveMotor(motorX, 20, 1000);
+// Space between letters
+moveMotor(motorX, 20, 500);
+// Handle sensor after drawing
+handleSensor();
+}
+// Function to draw letter 'N'
+void drawN() {
+moveMotor(motorPen,
+-12, 225);
+moveMotor(motorY,
+-20, 400);
+moveMotor(motorPen, 12, 270);
+moveMotor(motorY, 20, 350);
+moveMotor(motorPen,
+-12, 220);
+moveMotor(motorX, 100, 350);
+moveMotor(motorY,
+-25, 350);
+moveMotor(motorX, 0, 0);
+moveMotor(motorY, 0, 0);
+moveMotor(motorY, 20, 400);
+moveMotor(motorPen, 12, 270);
+
+// Space between words
+moveMotor(motorX, 20, 1000);
+// Handle sensor after drawing
+handleSensor();
+}
+// Function to draw letter 'P'
+void drawP() {
+moveMotor(motorPen,
+-12, 220);
+moveMotor(motorY,
+-20, 400);
+moveMotor(motorPen, 12, 270);
+moveMotor(motorY, 20, 400);
+moveMotor(motorPen,
+-12, 230);
+moveMotor(motorX, 20, 1000);
+moveMotor(motorY,
+-14, 200);
+moveMotor(motorX,
+-20, 1000);
+moveMotor(motorPen, 12, 220);
+moveMotor(motorY, 14, 200);
+moveMotor(motorX, 20, 1000);
+// Space between letters
+moveMotor(motorX, 20, 500);
+// Handle sensor after drawing
+handleSensor();
+
+}
+// Function to draw a specified letter based on predefined
+drawing instructions
+// Written by Surya Bhardwaj
+void drawLetter(char c) {
+switch(c) {
+case 'T':
+drawT();
+break;
+case 'R':
+drawR();
+break;
+case 'O':
+drawO();
+break;
+case 'N':
+drawN();
+break;
+
+case 'P':
+drawP();
+break; }
+}
+// ====================== Unit Test Functions
+======================
+// Variables to store unit test results
+bool test
+_
+configuration
+_passed = false;
+bool testPenUpDown
+_passed = false;
+bool testDrawCharacter
+_passed = false;
+// Function to test configuration
+bool test
+_
+configuration() {
+configureSensors();
+if (SensorType[S4] == sensorEV3
+_
+Touch) {
+return true;
+} else {
+return false;
+
+}
+}
+// Function to test pen up and down
+bool testPenUpDown() {
+moveMotor(motorPen,
+-12, 250);
+moveMotor(motorPen, 12, 270);
+return true;
+}
+// Function to test drawing a character
+bool testDrawCharacter(char c) {
+drawLetter(c);
+return true; // Actual error verification logic is needed
+}
+// ====================== Integration Test Functions
+======================
+// Variables to store integration test results
+
+bool integration
+_
+xy_
+movement
+_passed = false;
+bool integrationPenUpDown
+_passed = false;
+bool integrationMarginTest
+_passed = false;
+bool integrationPauseResumeTest
+_passed = false;
+bool integrationSystemTest
+_passed = false;
+// Function to perform integration XY movement test
+void integration
+_
+xy_
+movement() {
+eraseDisplay();
+displayCenteredTextLine(3,
+"Integration XY Move");
+displayTextLine(5,
+displayTextLine(6,
+"Ensure pen & paper aligned.
+");
+"Press Enter to continue.
+");
+while (!getButtonPress(buttonEnter)) {}
+while (getButtonPress(buttonEnter)) {}
+int initialX = nMotorEncoder[motorX];
+int initialY = nMotorEncoder[motorY];
+moveMotor(motorX, 20, 1000);
+moveMotor(motorY, 20, 1000);
+
+int finalX = nMotorEncoder[motorX];
+int finalY = nMotorEncoder[motorY];
+if ((finalX - initialX) >= 500 && (finalY - initialY) >= 500)
+{
+integration
+_
+xy_
+movement
+_passed = true;
+} else {
+integration
+_
+xy_
+movement
+_passed = false;
+} }
+// Function to perform integration Pen Up/Down test
+bool integrationPenUpDown() {
+eraseDisplay();
+displayCenteredTextLine(3,
+"Integration Pen Up/Down");
+displayTextLine(5,
+displayTextLine(6,
+"Verify pen moves correctly.
+");
+"Press Enter to start.
+");
+while (!getButtonPress(buttonEnter)) {}
+while (getButtonPress(buttonEnter)) {}
+moveMotor(motorPen,
+-12, 250);
+
+moveMotor(motorPen, 12, 270);
+return true;
+}
+// Function to perform integration margin test
+void integrationMarginTest() {
+eraseDisplay();
+displayCenteredTextLine(3,
+"Integration Margin Test");
+displayTextLine(5,
+displayTextLine(6,
+"Confirm touch sensor detects limit.
+"Press Enter to continue.
+");
+while (!getButtonPress(buttonEnter)) {}
+");
+while (getButtonPress(buttonEnter)) {}
+if (SensorValue[S4] == 1) {
+integrationMarginTest
+_passed = true;
+} else {
+integrationMarginTest
+_passed = false;
+} }
+
+// Function to perform integration pause/resume test
+void integrationPauseResumeTest() {
+eraseDisplay();
+displayCenteredTextLine(3,
+"Integration Pause/Resume");
+displayTextLine(5,
+"Press Enter to pause.
+");
+while (!getButtonPress(buttonEnter)) {}
+while (getButtonPress(buttonEnter)) {}
+isPaused = true;
+eraseDisplay();
+displayCenteredTextLine(3,
+"Paused");
+displayTextLine(5,
+"Press Enter to resume.
+while (!getButtonPress(buttonEnter)) {}
+while (getButtonPress(buttonEnter)) {}
+");
+isPaused = false;
+eraseDisplay();
+displayCenteredTextLine(3,
+wait1Msec(1000);
+"Resuming...
+");
+// Consider test as passed
+
+integrationPauseResumeTest
+_passed = true;
+}
+// Function to perform integration system test
+void integrationSystemTest() {
+eraseDisplay();
+displayCenteredTextLine(3,
+"Integration System Test");
+displayTextLine(5,
+displayTextLine(6,
+"Testing entire system.
+");
+"Press Enter to start.
+");
+while (!getButtonPress(buttonEnter)) {}
+while (getButtonPress(buttonEnter)) {}
+// Test the entire system functionality
+// For example, draw a simple character
+bool drawResult = testDrawCharacter('T');
+if (drawResult) {
+integrationSystemTest
+_passed = true;
+} else {
+
+integrationSystemTest
+_passed = false;
+}
+}
+// Function to run all unit tests
+void runUnitTests() {
+bool configResult = test
+_
+configuration();
+test
+_
+configuration
+_passed = configResult;
+bool penResult = testPenUpDown();
+testPenUpDown
+_passed = penResult;
+bool drawResult = testDrawCharacter('T');
+testDrawCharacter
+_passed = drawResult;
+}
+// Function to run all integration tests
+void runIntegrationTests() {
+// Integration XY Movement Test
+
+integration
+_
+xy_
+movement();
+// Integration Pen Up/Down Test
+bool penUpDownResult = integrationPenUpDown();
+integrationPenUpDown
+_passed = penUpDownResult;
+// Integration Margin Test
+integrationMarginTest();
+// Integration Pause/Resume Test
+integrationPauseResumeTest();
+// Integration System Test
+integrationSystemTest();
+}
+// Function to display unit test results
+void display_
+unit
+_
+test() {
+eraseDisplay();
+
+displayCenteredTextLine(1,
+"Unit Test Results:");
+test
+displayTextLine(3,
+"Configuration: %s"
+_
+configuration
+_passed ? "PASS"
+,
+: "FAIL");
+displayTextLine(4,
+"Pen Up/Down: %s"
+, testPenUpDown
+_passed ?
+"PASS" :
+"FAIL");
+displayTextLine(5,
+testDrawCharacter
+_passed ?
+"Draw Character 'T': %s"
+,
+"PASS" : "FAIL");
+displayTextLine(7,
+"Press Enter to Continue");
+while (!getButtonPress(buttonEnter)) {}
+while (getButtonPress(buttonEnter)) {}
+}
+// Function to display integration test results
+void display_
+integration
+_
+test() {
+eraseDisplay();
+displayCenteredTextLine(1,
+"Integration Test Results:");
+
+displayTextLine(3,
+"XY Movement: %s"
+integration
+_
+xy_
+movement
+_passed ?
+,
+"PASS" : "FAIL");
+displayTextLine(4,
+"Pen Up/Down: %s"
+integrationPenUpDown
+_passed ? "PASS"
+,
+: "FAIL");
+displayTextLine(5,
+"Margin Test: %s"
+integrationMarginTest
+_passed ?
+,
+"PASS" : "FAIL");
+displayTextLine(6,
+"Pause/Resume: %s"
+integrationPauseResumeTest
+_passed ?
+,
+"PASS" : "FAIL");
+displayTextLine(7,
+"System Test: %s"
+integrationSystemTest
+_passed ?
+,
+"PASS" : "FAIL");
+displayTextLine(9,
+"Press Enter to Continue");
+while (!getButtonPress(buttonEnter)) {}
+while (getButtonPress(buttonEnter)) {}
+}
+// Function to move the pen to a specified X coordinate with
+boundary checks
+
+// Written by Kovid Gopikaramana
+void penLeftRight(int xCoordinate) {
+// Define boundaries
+int xMin = 0; // Minimum X coordinate
+int xMax = 10000; // Maximum X coordinate
+// Check boundaries
+if (xCoordinate < xMin) {
+xCoordinate = xMin;
+} else if (xCoordinate > xMax) {
+xCoordinate = xMax;
+}
+// Get current X position
+int currentX = nMotorEncoder[motorX];
+// Calculate difference
+int deltaX = xCoordinate - currentX;
+// If deltaX is zero, no need to move
+
+if (deltaX == 0) {
+return;
+}
+// Move motor to target
+moveMotorTarget(motorX, deltaX, 50); // 50 is speed
+// Wait until movement is complete
+while (getMotorMoving(motorX)) {
+// Optional: check for pause/resume
+}
+// Ensure motor is stopped
+motor[motorX] = 0;
+}
+// Function to move the paper to a specified Y coordinate with
+boundary checks
+// Written by Kovid Gopikaramana
+void paperMovement(int yCoordinate) {
+
+// Define boundaries
+int yMin = 0; // Minimum Y coordinate
+int yMax = 10000; // Maximum Y coordinate
+// Check boundaries
+if (yCoordinate < yMin) {
+yCoordinate = yMin;
+} else if (yCoordinate > yMax) {
+yCoordinate = yMax;
+}
+// Get current Y position
+int currentY = nMotorEncoder[motorY];
+// Calculate difference
+int deltaY = yCoordinate - currentY;
+// If deltaY is zero, no need to move
+if (deltaY == 0) {
+return;
+
+}
+// Move motor to target
+moveMotorTarget(motorY, deltaY, 50); // 50 is speed
+// Wait until movement is complete
+while (getMotorMoving(motorY)) {
+// Optional: check for pause/resume
+}
+// Ensure motor is stopped
+motor[motorY] = 0;
+}
+// Shutdown function to finish the robot's work
+// Written by Kartikeya Satyam
+void shutdown(float totalTimeSec)
+{
+// Lift the pen
+moveMotor(motorPen, 12, 270); // Lift pen
+
+// Stop all motors
+motor[motorX] = 0;
+motor[motorY] = 0;
+motor[motorPen] = 0;
+// Display shutdown message
+eraseDisplay();
+displayCenteredTextLine(3,
+"Work Done");
+displayTextLine(5,
+"Time: %.2f sec"
+, totalTimeSec);
+displayTextLine(7,
+"Shutting down...
+");
+wait1Msec(5000);
+}
+// Function to run the robot
+// Written by Jade Lee
+void runrobot()
+{
+// Open the input file
+TFileHandle fin;
+
+bool fileOkay = openReadPC(fin,
+"input.txt");
+if (!fileOkay)
+{
+eraseDisplay();
+displayCenteredTextLine(3,
+wait1Msec(5000);
+stopAllTasks();
+"Failed to Open File");
+}
+// Read the file to determine the total number of letters
+totalLetters = 0;
+char tempChar;
+while (readCharPC(fin, tempChar)) {
+tempChar = charToUpper(tempChar);
+if (tempChar == 'T' || tempChar == 'R' || tempChar == 'O' ||
+tempChar
+== 'N' || tempChar == 'P') {
+totalLetters++;
+
+} }
+// Reset the file pointer to the beginning
+closeFilePC(fin);
+fileOkay = openReadPC(fin,
+if (!fileOkay) {
+"input.txt");
+eraseDisplay();
+displayCenteredTextLine(3,
+wait1Msec(5000);
+stopAllTasks();
+"Error: File Not Found");
+}
+// Record the start time
+clearTimer(T1);
+// Set initial position
+int xPosition = 0;
+// Loop through each character in the file
+while (readCharPC(fin, tempChar)) {
+
+tempChar = charToUpper(tempChar);
+if (tempChar == 'T' || tempChar == 'R' || tempChar == 'O' ||
+tempChar
+== 'N' || tempChar == 'P') {
+currentLetter++;
+displayProgress(currentLetter);
+// Move pen to start position for the letter
+xPosition += 300; // Increment x position for letter
+spacing
+penLeftRight(xPosition);
+// Draw the letter using the drawLetter function
+drawLetter(tempChar);
+} }
+// Close the input file
+closeFilePC(fin);
+// Move back to starting position (0, 0)
+penLeftRight(0); // Move to x = 0
+
+paperMovement(0); // Move to y = 0
+// Calculate the total time taken
+int totalTimeMs = time1[T1];
+float totalTimeSec = totalTimeMs / 1000.0;
+// Call shutdown function
+shutdown(totalTimeSec);
+}
+task main() {
+// Configure sensors and reset motor encoders
+configureSensors();
+// Initialize motors
+motor[motorX] = 0;
+motor[motorY] = 0;
+motor[motorPen] = 0;
+// Display main menu
+
+eraseDisplay();
+displayCenteredTextLine(3,
+"Select Mode:");
+displayTextLine(5,
+"1. Normal Mode");
+displayTextLine(6,
+"2. Test Mode");
+while (true) {
+if (getButtonPress(buttonEnter)) {
+while (getButtonPress(buttonEnter)) {} // Wait for
+release
+// Menu selection: Left button is Normal Mode, Right
+button is
+Test Mode
+eraseDisplay();
+displayCenteredTextLine(3,
+"Select:");
+displayTextLine(5,
+"Left: Normal");
+displayTextLine(6,
+"Right: Test");
+while (!getButtonPress(buttonLeft) &&
+!getButtonPress(buttonRight)) {}
+if (getButtonPress(buttonLeft)) {
+while (getButtonPress(buttonLeft)) {}
+break; // Proceed to Normal Mode
+
+} else if (getButtonPress(buttonRight)) {
+while (getButtonPress(buttonRight)) {}
+// Run Unit Tests
+runUnitTests();
+display_
+unit
+_
+test();
+// Run Integration Tests
+runIntegrationTests();
+display_
+integration
+_
+test();
+// After tests, go back to main menu or exit
+eraseDisplay();
+displayCenteredTextLine(3,
+"Tests Completed");
+displayTextLine(5,
+"Press Enter to Exit");
+while (!getButtonPress(buttonEnter)) {}
+while (getButtonPress(buttonEnter)) {}
+stopAllTasks();
+} }
+wait1Msec(100);
+}
+// Display "Press Enter to Start" and wait for user input
+
+eraseDisplay();
+displayCenteredTextLine(3,
+"Press Enter to Start");
+while (!getButtonPress(buttonEnter)) {}
+while (getButtonPress(buttonEnter)) {}
+// Run the robot
+runrobot();
+}
